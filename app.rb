@@ -25,6 +25,10 @@ class HangpersonApp < Sinatra::Base
     erb :new
   end
   
+  # post '/new' do
+  #   redirect '/create', 307
+  # end
+  
   post '/create' do
     # NOTE: don't change next line - it's needed by autograder!
     word = params[:word] || HangpersonGame.get_random_word
@@ -40,7 +44,13 @@ class HangpersonApp < Sinatra::Base
   post '/guess' do
     letter = params[:guess].to_s[0]
     ### YOUR CODE HERE ###
-    redirect '/show'
+    @game.guess(letter)
+    
+    if(!@game.guess(letter))
+		  flash[:message]="You have already used that letter"
+	  end
+	redirect '/show'
+
   end
   
   # Everytime a guess is made, we should eventually end up at this route.
@@ -50,6 +60,17 @@ class HangpersonApp < Sinatra::Base
   # wrong_guesses and word_with_guesses from @game.
   get '/show' do
     ### YOUR CODE HERE ###
+    
+    if(@game.check_win_or_lose == :win)
+      redirect '/win'
+    end
+    
+    if(@game.check_win_or_lose == :lose)
+      redirect '/lose'
+    end
+    
+    @wrong_guesses = @game.wrong_guesses
+	  @word_with_guesses = @game.word_with_guesses	
     erb :show # You may change/remove this line
   end
   
