@@ -19,7 +19,11 @@ class HangpersonGame
   def guess(guess)
     
     raise ArgumentError, "Invalid input" if (guess == nil ) || (guess !~ /[a-zA-Z]+/) 
-
+    
+    if(guess == nil || guess !~ /[a-zA-Z]+/ )
+      valid = false
+    end
+    
     guess.downcase!
 
     if(word.include?(guess))
